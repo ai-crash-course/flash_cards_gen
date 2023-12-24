@@ -1,4 +1,5 @@
-import openai 
+from openai import OpenAI
+import configs
 
 def get_model(model_name):
     if model_name == "flash_agent":
@@ -13,7 +14,10 @@ class FlashAgent:
         """
         From Content to GPT Respond
         """
-        response = openai.ChatCompletion.create(
+        client = OpenAI(
+            api_key=configs.OPENAI_API_KEY
+        )
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
             {"role": "user", "content":
