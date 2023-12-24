@@ -1,6 +1,5 @@
 import os
 import configs
-os.environ["OPENAI_API_KEY"] = configs.OPENAI_API_KEY
 
 import argparse
 import json
@@ -40,18 +39,15 @@ def main(model_name, txt_path, reset=False):
         flash_card_list = json.load(open(path, "r"))
 
     # Gradio
-    def sentence_builder(activity_list, morning):
-        return f"""The {quantity} {animal}s from {" and ".join(countries)} went to the {place} where they {" and ".join(activity_list)} until the {"morning" if morning else "night"}"""
 
-   
     # Clean up the flash card list by rremoving anything preceding ':'
     for i in range(len(flash_card_list)):
         for key in flash_card_list[i].keys():
-            if ':' in flash_card_list[i][key]:
+            if ":" in flash_card_list[i][key]:
                 flash_card_list[i][key] = flash_card_list[i][key].split(":")[1].strip()
 
     index = 0
-    answer_keys = ['true_answer', 'wrong_answer_1', 'wrong_answer_2', 'wrong_answer_3']
+    answer_keys = ["true_answer", "wrong_answer_1", "wrong_answer_2", "wrong_answer_3"]
     # random permutations of size 4
     indices = np.random.permutation(4)
 
@@ -66,30 +62,27 @@ def main(model_name, txt_path, reset=False):
         else:
             return gr.update(value="Wrong", visible=True)
 
-    question = flash_card_list[index]['question']
+    question = flash_card_list[index]["question"]
     with gr.Blocks() as demo:
-        radio = gr.Radio(answer_list, value=answer_list[0], 
-                          label = question)
+        radio = gr.Radio(answer_list, value=answer_list[0], label=question)
         label = gr.Label(visible=False)
         greet_btn = gr.Button("Greet")
         greet_btn.click(fn=greet, inputs=radio, outputs=label, api_name="Submit")
-        
-    
+
     demo.launch()
     print("Experiment Completed")
-
-    
 
 
 # Entry point with parser
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process some integers.")
+    parser.add_argument("--model", type=str, default="flash_agent", help="model name")
+    parser.add_argument(
+        "--txt_path",
+        type=str,
+        default="santa_wiki.txt",
+        help="content to send to the model",
+    )
 
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--model', type=str, default="flash_agent",
-                        help='model name')
-    parser.add_argument('--txt_path', type=str, default="santa_wiki.txt",
-                        help='content to send to the model')
-    
     args = parser.parse_args()
     main(args.model, args.txt_path)
-
