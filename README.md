@@ -2,9 +2,14 @@
 
 ## Quick Start
 
-1. Create `configs.py` with the variable `OPENAI_API_KEY = 'key here'` where you would instantiate your key (Note that this file will not be pushed to the repo and is private)
+1. Install required dependencies:  
+   ```
+   pip install -r requirements.txt
+   ```
 
-2. Run `python main.py --text_path santa_wiki.txt --model_name flash_agent`
+2. Create `configs.py` with the variable `OPENAI_API_KEY = 'key here'` where you would instantiate your key (Note that this file will not be pushed to the repo and is private)
+
+3. Run `python main.py --txt_path santa_wiki.txt --model flash_agent`
 
 ## Goal
 
