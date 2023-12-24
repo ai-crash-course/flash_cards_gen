@@ -22,7 +22,7 @@ class FlashAgent:
             )
         return response.choices[0].message.content
 
-    def generate_flash_card(self, text):
+    def generate_flash_card(self, text, n_questions=5):
         """
         LLM is only used here
 
@@ -38,11 +38,10 @@ class FlashAgent:
             text_input = f"""
             You are a Trivia Master
 
-            Do not repeat these questions
-            {past_question_list}
-
             Extract a question, its 1 true answer, and generate 3 wrong answers
-            in the following format from the 'Text' below without repeating these questions {past_question_list}.
+            in the following format from the 'Text' below.
+
+            Make sure the question is not in this list {past_question_list}
 
             Question:
             True Answer:
@@ -60,7 +59,7 @@ class FlashAgent:
             flash_card_dict = parse_raw_text(output)
             return flash_card_dict
 
-        for i in range(5):
+        for i in range(n_questions):
             flash_card_dict = get_flash_card_w_history(past_question_list=str(past_question_list))
 
             past_question_list += [flash_card_dict['question']]
